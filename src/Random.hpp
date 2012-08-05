@@ -13,12 +13,12 @@ inline void setup_rand()
 
 inline GLfloat random_float()
 {
-	return (GLfloat)rand() / (GLfloat)RAND_MAX;
+   return (GLfloat)rand() / (GLfloat)RAND_MAX;
 }
 
 inline GLfloat random_float(const float minimum, const float maximum)
 {
-	return minimum + random_float() * (maximum - minimum);
+   return minimum + random_float() * (maximum - minimum);
 }
 
 template<typename T>

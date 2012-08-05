@@ -7,7 +7,7 @@
 #include "Log.hpp"
 
 std::wstring GetStartUpPath()
-{ 
+{
    WCHAR result[MAX_PATH + 1] = L"";
    GetModuleFileNameW(NULL, result, MAX_PATH);
 
@@ -25,7 +25,7 @@ std::vector<unsigned char> WindowsAssetLoader::read(const std::string& assetName
 {
    const std::wstring filePath = basePath + L"\\assets\\" + std::wstring(assetName.begin(), assetName.end());
    std::ifstream file(filePath, std::ios_base::in | std::ios_base::binary);
-      
+
    std::vector<unsigned char> fileContent;
 
    if( file.good() )

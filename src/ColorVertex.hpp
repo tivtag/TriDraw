@@ -8,23 +8,23 @@
 struct ColorVertex
 {
 #pragma pack(push,1)
-	GLfloat x;
-	GLfloat y;
-	
-	unsigned char r;	
-	unsigned char g;
-	unsigned char b;
-	unsigned char a;
+   GLfloat x;
+   GLfloat y;
+
+   unsigned char r;	
+   unsigned char g;
+   unsigned char b;
+   unsigned char a;
 #pragma pack(pop)
 
-	ColorVertex() : x(0.0f), y(0.0f), r(0), g(0), b(0), a(0)
-	{
-	}
+   ColorVertex() : x(0.0f), y(0.0f), r(0), g(0), b(0), a(0)
+   {
+   }
 
-	ColorVertex(const GLfloat _x, const GLfloat _y, const unsigned char _r, const unsigned char _g, const unsigned char _b, const unsigned char _a)
-		:x(_x), y(_y), r(_r), g(_g), b(_b), a(_a)
-	{
-	}
+   ColorVertex(const GLfloat _x, const GLfloat _y, const unsigned char _r, const unsigned char _g, const unsigned char _b, const unsigned char _a)
+      :x(_x), y(_y), r(_r), g(_g), b(_b), a(_a)
+   {
+   }
 
    inline void mutate()
    {

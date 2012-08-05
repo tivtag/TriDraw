@@ -13,7 +13,7 @@ public:
 public:
    Image();
    ~Image();
-         
+
    bool loadFromAsset(const std::string& assetName, AssetLoader&);
 
 private:

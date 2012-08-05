@@ -35,21 +35,21 @@ bool Simulation::setup(const GLuint windowWidth, const GLuint windowHeight, cons
    this->viewportHeight = viewportHeight;
 
    const char VertexShaderCode[] = 
-      "attribute vec4 a_position;\n"
-	   "attribute lowp vec4 a_color;\n"
-	   "varying lowp vec4 v_color; \n"
-	   "\n"
-      "void main() {\n"
-      "   gl_Position = a_position;\n"
-	   "   v_color = a_color;\n"
-      "}\n";
+      "attribute vec4 a_position;      \n"
+      "attribute lowp vec4 a_color;    \n"
+      "varying lowp vec4 v_color;      \n"
+      "                                \n"
+      "void main() {                   \n"
+      "   gl_Position = a_position;    \n"
+      "   v_color = a_color;           \n"
+      "}                               \n";
 
    const char FragmentShaderCode[] = 
-      "precision mediump float;\n"
-	   "varying lowp vec4 v_color;\n"
-      "void main() {\n"
-      "  gl_FragColor = v_color;\n"
-      "}\n";
+      "precision mediump float;        \n"
+      "varying lowp vec4 v_color;      \n"
+      "void main() {                   \n"
+      "  gl_FragColor = v_color;       \n"
+      "}                               \n";
 
    program = createProgram(VertexShaderCode, FragmentShaderCode);
    if(!program)
@@ -62,7 +62,7 @@ bool Simulation::setup(const GLuint windowWidth, const GLuint windowHeight, cons
    positionAttribute = glGetAttribLocation(program, "a_position");
    checkGlError("glGetAttribLocation");
    LOGI("glGetAttribLocation(\"a_position\") = %d\n", positionAttribute);
-	
+
    colorAttribute = glGetAttribLocation(program, "a_color");
    checkGlError("glGetAttribLocation");
    LOGI("glGetAttribLocation(\"a_color\") = %d\n", colorAttribute);
@@ -96,7 +96,7 @@ bool Simulation::setup(const GLuint windowWidth, const GLuint windowHeight, cons
    LOGI("Success engine_init_display");
       
    if(!load_content(assetLoader))
-   {         
+   {
       LOGE("Could not load content!");
       return false;
    }
@@ -132,7 +132,7 @@ bool Simulation::load_content(AssetLoader& assetLoader)
 }
 
 unsigned long long Simulation::calculate_total_fitness(const unsigned char* buffer)
-{   
+{
    unsigned long long totalFitness = 0UL;
    
    for(unsigned int x = 0; x < viewportWidth; ++x)
@@ -176,14 +176,14 @@ void Simulation::compare_fitness()
    read_back_buffer(currentBuffer);
    const unsigned long long currentFitness = calculate_fitness();
     
-   if( currentFitness <= bestFitness )
+   if(currentFitness <= bestFitness)
    {
       bestFitness = currentFitness;
       copy_current_to_best_triangles();
 
       // Toggle double buffered fbo
       renderTextureActiveA = !renderTextureActiveA;
-	   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTextureActiveA ? renderTextureIdA : renderTextureIdB, 0);
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTextureActiveA ? renderTextureIdA : renderTextureIdB, 0);
 #if DEBUG
       const unsigned long long currentTotalFitness = calculate_total_fitness(currentBuffer);
       LOGI("Found new best fitness %ul (%ul of %ul) !!! verts=%i", bestFitness, currentTotalFitness, targetTotalFitness, currentVertexCount);
@@ -209,58 +209,58 @@ void Simulation::draw_output()
  
 bool Simulation::create_render_target()
 {
-	// Get the currently bound frame buffer object. On most platforms this just gives 0.
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
+   // Get the currently bound frame buffer object. On most platforms this just gives 0.
+   glGetIntegerv(GL_FRAMEBUFFER_BINDING, &originalFbo);
 
    // Create a texture A for rendering to
-	glGenTextures(1, &renderTextureIdA);
-	glBindTexture(GL_TEXTURE_2D, renderTextureIdA);
+   glGenTextures(1, &renderTextureIdA);
+   glBindTexture(GL_TEXTURE_2D, renderTextureIdA);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, viewportWidth, viewportHeight, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, 0);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, viewportWidth, viewportHeight, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, 0);
    checkGlError("glTexImage2D A render target");
 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
    
    // Create a texture A for rendering to
    glGenTextures(1, &renderTextureIdB);
-	glBindTexture(GL_TEXTURE_2D, renderTextureIdB);
+   glBindTexture(GL_TEXTURE_2D, renderTextureIdB);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, viewportWidth, viewportHeight, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, 0);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, viewportWidth, viewportHeight, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, 0);
    checkGlError("glTexImage2D B render target");
 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	// Create the object that will allow us to render to the aforementioned texture
-	glGenFramebuffers(1, &fbo);
+   // Create the object that will allow us to render to the aforementioned texture
+   glGenFramebuffers(1, &fbo);
    checkGlError("glGenFramebuffers");
 
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
    // Attach the texture to the FBO
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTextureIdA, 0);
+   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTextureIdA, 0);
    checkGlError("glFramebufferTexture2D render texture A ");
    
    // Check that our FBO creation was successful
-	GLuint uStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+   GLuint uStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-	if(uStatus != GL_FRAMEBUFFER_COMPLETE)
-	{
-		LOGE("ERROR: Failed to initialise FBO");
-		return false;
-	}   
+   if(uStatus != GL_FRAMEBUFFER_COMPLETE)
+   {
+      LOGE("ERROR: Failed to initialise FBO");
+      return false;
+   }   
 
-	// Clear the colour for the FBO / PBuffer surface
-	glClear(GL_COLOR_BUFFER_BIT);
+   // Clear the colour for the FBO / PBuffer surface
+   glClear(GL_COLOR_BUFFER_BIT);
 
-	// Unbind
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
+   // Unbind
+   glBindTexture(GL_TEXTURE_2D, 0);
+   glBindFramebuffer(GL_FRAMEBUFFER, originalFbo);
    LOGI("Successfully loaded render target.");
    return true;
 }
@@ -269,11 +269,11 @@ void Simulation::create_random_triangles()
 {
    currentVertexCount = 0;
 
-	for( int triangleIndex = 0; triangleIndex < Constants::InitialTriangleCount; ++triangleIndex)
-	{
-		const int vertexIndex = triangleIndex*3;      
+   for( int triangleIndex = 0; triangleIndex < Constants::InitialTriangleCount; ++triangleIndex)
+   {
+      const int vertexIndex = 3 * triangleIndex;
       create_random_vertex(vertexIndex);
-	}
+   }
 }
 
 void Simulation::copy_current_to_best_triangles()
@@ -281,9 +281,9 @@ void Simulation::copy_current_to_best_triangles()
    bestVertexCount = currentVertexCount;
 
    for( int index = 0; index < bestVertexCount; ++index)
-	{
-		bestVertices[index] = currentVertices[index];
-	}
+   {
+      bestVertices[index] = currentVertices[index];
+   }
 }
 
 void Simulation::copy_best_to_current_triangles()
@@ -291,9 +291,9 @@ void Simulation::copy_best_to_current_triangles()
    currentVertexCount = bestVertexCount;
 
    for( int index = 0; index < bestVertexCount; ++index)
-	{
-		currentVertices[index] = bestVertices[index];
-	}
+   {
+      currentVertices[index] = bestVertices[index];
+   }
 }
 
 void Simulation::create_random_vertex(const int vertexIndex)
@@ -310,7 +310,7 @@ void Simulation::create_random_vertex(const int vertexIndex)
    currentVertices[vertexIndex + 0] = ColorVertex(centerX + random_float(-Range, Range), centerY + random_float(-Range, Range), red, green, blue, alpha);
    currentVertices[vertexIndex + 1] = ColorVertex(centerX + random_float(-Range, Range), centerY + random_float(-Range, Range), red, green, blue, alpha);
    currentVertices[vertexIndex + 2] = ColorVertex(centerX + random_float(-Range, Range), centerY + random_float(-Range, Range), red, green, blue, alpha);
-	currentVertexCount += 3;
+   currentVertexCount += 3;
 }
 
 void Simulation::mutate_triangles()
@@ -323,7 +323,7 @@ void Simulation::mutate_triangles()
       }
    }
 
-   // move triangle   
+   // move triangle
    if(should_mutate(Constants::MovePolygonMutationRate))
    {
       const int triangleCount = currentVertexCount/3;
@@ -331,7 +331,7 @@ void Simulation::mutate_triangles()
       {
          const int triangleIndexA = random_integer(0, triangleCount);
          const int triangleIndexB = random_integer(0, triangleCount);
-                  
+
          const ColorVertex b1 = currentVertices[triangleIndexB + 0];
          const ColorVertex b2 = currentVertices[triangleIndexB + 1];
          const ColorVertex b3 = currentVertices[triangleIndexB + 2];
@@ -339,7 +339,7 @@ void Simulation::mutate_triangles()
          currentVertices[triangleIndexB + 0] = currentVertices[triangleIndexA + 0];
          currentVertices[triangleIndexB + 1] = currentVertices[triangleIndexA + 1];
          currentVertices[triangleIndexB + 2] = currentVertices[triangleIndexA + 2];
-         
+
          currentVertices[triangleIndexA + 0] = b1;
          currentVertices[triangleIndexA + 1] = b2;
          currentVertices[triangleIndexA + 2] = b3;
@@ -377,8 +377,8 @@ void Simulation::draw_triangles()
    glBindBuffer(GL_ARRAY_BUFFER, vboId);
    
    // Send changed vertex data to GPU
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ColorVertex)*currentVertexCount, currentVertices);
-   	
+   glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ColorVertex)*currentVertexCount, currentVertices);
+
    // Clear currentBuffer
    glClearColor(1, 1, 1, 1);    
    glClear(GL_COLOR_BUFFER_BIT);
@@ -393,21 +393,21 @@ void Simulation::draw_triangles()
    // Position
    glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, vertexStride, 0);
    checkGlError("glVertexAttribPointer position");
-	
+
    glEnableVertexAttribArray(positionAttribute);
    checkGlError("glEnableVertexAttribArray position");
 
    // Color
    glVertexAttribPointer(colorAttribute, 4, GL_UNSIGNED_BYTE, GL_TRUE, vertexStride, (void*)(2 * sizeof(GLfloat)));
    checkGlError("glVertexAttribPointer color");
-	
+
    glEnableVertexAttribArray(colorAttribute);
    checkGlError("glEnableVertexAttribArray color");
 
    // Draw Triangles
    glDrawArrays(GL_TRIANGLES, 0, currentVertexCount);
    checkGlError("glDrawArrays");
-	
+
    // Disable
    glDisableVertexAttribArray(positionAttribute);
    glDisableVertexAttribArray(colorAttribute);
@@ -441,7 +441,6 @@ unsigned long long Simulation::calculate_fitness()
          const int blue  = targetBuffer[index + 2] - currentBuffer[index + 2];
          
          fitness += std::abs(red) + std::abs(green)+ std::abs(blue);
-
          //fitness += red * red + green * green + blue * blue;
       }
    }
@@ -452,15 +451,14 @@ unsigned long long Simulation::calculate_fitness()
       LOGW("Very low fitness! Bug?! vw=%iu vh=%iu BufferSize=%lu", viewportWidth, viewportHeight, BufferSize);
       LOGW("%d %d", sizeof(unsigned long), sizeof(unsigned long));
    }
-   
-   // LOGI("fitness %lu %lu", fitness, bestFitness);
+
    return fitness;
 }
 
 void Simulation::fill_target_buffer()
 {
-   glClearColor(1, 1, 1, 1);    
-   glClear(GL_COLOR_BUFFER_BIT);      
+   glClearColor(1, 1, 1, 1);
+   glClear(GL_COLOR_BUFFER_BIT);
    glBindTexture(GL_TEXTURE_2D, texture.id());
 
    texturedQuadEffect.flipY(true);
@@ -468,7 +466,7 @@ void Simulation::fill_target_buffer()
    texturedQuadEffect.flipY(false);
    read_back_buffer(targetBuffer);
 
-   glClearColor(1, 1, 1, 1);    
+   glClearColor(1, 1, 1, 1);
    glClear(GL_COLOR_BUFFER_BIT);
             
    glBindTexture(GL_TEXTURE_2D, 0);

@@ -47,7 +47,7 @@ static int engine_init_display(struct engine* engine)
 {
    // initialize OpenGL ES and EGL
    LOGI("Begin engine_init_display");
-	
+
    /*
    * Here specify the attributes of the desired configuration.
    * Below, we select an EGLConfig with at least 8 bits per color
@@ -63,7 +63,7 @@ static int engine_init_display(struct engine* engine)
    const EGLint attrib_list [] = {
       EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
    };
-    
+
    EGLint w, h, dummy, format;
    EGLint numConfigs;
    EGLConfig config;
@@ -89,7 +89,8 @@ static int engine_init_display(struct engine* engine)
    surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
    context = eglCreateContext(display, config, NULL, attrib_list);
 
-   if(eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
+   if(eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
+   {
       LOGW("Unable to eglMakeCurrent");
       return -1;
    }
@@ -119,8 +120,8 @@ static int engine_init_display(struct engine* engine)
    printGLString("Extensions", GL_EXTENSIONS);
 
    LOGW("setupGraphics view=(%d, %d) win=(%d, %d)", viewportWidth, viewportHeight, w, h);
-              
-   if(!simulation.setup(w, h, viewportWidth, viewportHeight, *assetLoader) )
+
+   if(!simulation.setup(w, h, viewportWidth, viewportHeight, *assetLoader))
    {
       LOGE("Failed to setup simulation");
       return -1;
@@ -139,9 +140,9 @@ static void engine_draw_frame(struct engine* engine)
 
    //const std::clock_t start = std::clock();   
    simulation.tick();
-   
-	// Render to screen
-   eglSwapBuffers(engine->display, engine->surface);    
+
+   // Render to screen
+   eglSwapBuffers(engine->display, engine->surface);
    //frameTime = (std::clock() - start) / (float)CLOCKS_PER_SEC;
 }
 
@@ -171,7 +172,7 @@ static void engine_term_display(struct engine* engine)
    engine->display = EGL_NO_DISPLAY;
    engine->context = EGL_NO_CONTEXT;
    engine->surface = EGL_NO_SURFACE;
-   
+
    ANativeActivity_finish(engine->app->activity);
    exit(0);
 }
@@ -188,11 +189,9 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event)
       if(AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN)
       {
          simulation.toggleOutputTexture();
-      }   
+      }
 
       engine->animating = 1;
-      // engine->state.x = AMotionEvent_getX(event, 0);
-      // engine->state.y = AMotionEvent_getY(event, 0);
       return 1;
    }
 
@@ -207,14 +206,14 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
    struct engine* engine = (struct engine*)app->userData;
 
    switch(cmd) 
-	{
+   {
         case APP_CMD_SAVE_STATE:
             break;
 
         case APP_CMD_INIT_WINDOW:
             // The window is being shown, get it ready.
             if(engine->app->window != NULL)
-			   {
+            {
                 engine_init_display(engine);
                 engine_draw_frame(engine);
             }
@@ -226,34 +225,12 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd)
             break;
 
         case APP_CMD_GAINED_FOCUS:
-            //// When our app gains focus, we start monitoring the accelerometer.
-            //if (engine->accelerometerSensor != NULL) {
-            //    ASensorEventQueue_enableSensor(engine->sensorEventQueue, engine->accelerometerSensor);
-            //    // We'd like to get 60 events per second (in us).
-            //    ASensorEventQueue_setEventRate(engine->sensorEventQueue, engine->accelerometerSensor, (1000L/60)*1000);
-            //    
-            //    ASensorEventQueue_enableSensor(engine->sensorEventQueue, engine->gyroSensor);
-            //    // We'd like to get 60 events per second (in us).
-            //    ASensorEventQueue_setEventRate(engine->sensorEventQueue, engine->gyroSensor, (1000L/60)*1000);                
-            //}
             engine->animating = 1;
             break;
 
         case APP_CMD_LOST_FOCUS:
-            // When our app loses focus, we stop monitoring the accelerometer.
-            // This is to avoid consuming battery while not being used.
-            //if (engine->accelerometerSensor != NULL) {
-            //    ASensorEventQueue_disableSensor(engine->sensorEventQueue, engine->accelerometerSensor);
-            //}
-            //        if (engine->gyroSensor != NULL) {
-            //    ASensorEventQueue_disableSensor(engine->sensorEventQueue, engine->gyroSensor);
-            //}
-
-            // Also stop animating.
-            // engine->animating = 0;
-            // engine_draw_frame(engine);
-			engine_term_display(engine);
-			ANativeActivity_finish(app->activity);
+            engine_term_display(engine);
+            ANativeActivity_finish(app->activity);
             break;
     }
 }
@@ -275,7 +252,7 @@ void android_main(struct android_app* state)
    state->onAppCmd = engine_handle_cmd;
    state->onInputEvent = engine_handle_input;
    engine.app = state;
-   
+
    ANativeActivity_setWindowFlags(state->activity, AWINDOW_FLAG_FULLSCREEN|AWINDOW_FLAG_KEEP_SCREEN_ON , 1);
 
    // Prepare infrastructure
@@ -285,9 +262,6 @@ void android_main(struct android_app* state)
    // Prepare sensors
    engine.assetManager = state->activity->assetManager;
    engine.sensorManager = ASensorManager_getInstance();
-   //engine.accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
-   //engine.gyroSensor = ASensorManager_getDefaultSensor(engine.sensorManager, ASENSOR_TYPE_GYROSCOPE);
-   //engine.sensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager, state->looper, LOOPER_ID_USER, NULL, NULL);
       
    // loop waiting for stuff to do.
    while(1) 
@@ -306,11 +280,6 @@ void android_main(struct android_app* state)
          if(source != NULL)
          {
             source->process(state, source);
-         }
-
-         // If a sensor has data, process it now.
-         if(ident == LOOPER_ID_USER)
-         {
          }
 
          // Check if we are exiting.

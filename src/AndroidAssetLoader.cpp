@@ -26,7 +26,7 @@ std::vector<unsigned char> AndroidAssetLoader::read(const std::string& assetName
       {
          LOGE("Could not make asset buffer");
       }
-      
+
       AAsset_close(asset);
    }
    

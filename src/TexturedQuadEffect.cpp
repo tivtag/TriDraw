@@ -26,8 +26,8 @@ bool TexturedQuadEffect::load()
       "                                                        \n"
       "void main(void)                                         \n"
       "{                                                       \n"
-	   "   gl_Position = a_position;                            \n"
-	   "   v_uv        = a_uv.xy;                               \n"
+      "   gl_Position = a_position;                            \n"
+      "   v_uv        = a_uv.xy;                               \n"
       "}";
    
    const char* FragmentShaderCode = "                          \n"
@@ -38,7 +38,7 @@ bool TexturedQuadEffect::load()
       "{                                                       \n"
       "    gl_FragColor = texture2D(u_sampler2d, v_uv);        \n"
       "}";
-         
+
    program = createProgram(VertexShaderCode, FragmentShaderCode);
    checkGlError("createProgram");
 
@@ -47,19 +47,19 @@ bool TexturedQuadEffect::load()
       LOGE("Could not create fullscreen program.");
       return false;
    }
-      
+
    // Get attribute locations
    positionAttribute = glGetAttribLocation(program, "a_position");
    checkGlError("glGetAttribLocation");
-	
+
    uvAttribute = glGetAttribLocation(program, "a_uv");
    checkGlError("glGetAttribLocation");
-         
+
    // Vertex Buffer
    glGenBuffers(1, &vbo);
-   checkGlError("glGenBuffers");   
+   checkGlError("glGenBuffers");
    {
-      const GLfloat fullscreenVertices[] = {      
+      const GLfloat fullscreenVertices[] = {
           -1.0f, -1.0f, 0.0f, 1.0f,
            1.0f, -1.0f, 1.0f, 1.0f,
           -1.0f,  1.0f, 0.0f, 0.0f,
@@ -68,19 +68,19 @@ bool TexturedQuadEffect::load()
            1.0f, -1.0f, 1.0f, 1.0f,
            1.0f,  1.0f, 1.0f, 0.0f
       };
-           
-	   const GLuint vertexStride = 4 * sizeof(GLfloat); // 2 floats for the pos, 2 for the UVs
-      
-	   // Bind the VBO
-	   glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+      const GLuint vertexStride = 4 * sizeof(GLfloat); // 2 floats for the pos, 2 for the UVs
+
+      // Bind the VBO
+      glBindBuffer(GL_ARRAY_BUFFER, vbo);
       checkGlError("glBindBuffer");
 
-	   // Set the buffer's data
-	   glBufferData(GL_ARRAY_BUFFER, 6 * vertexStride, fullscreenVertices, GL_STATIC_DRAW);
+      // Set the buffer's data
+      glBufferData(GL_ARRAY_BUFFER, 6 * vertexStride, fullscreenVertices, GL_STATIC_DRAW);
       checkGlError("glBufferData");
-   
-	   // Unbind the VBO
-	   glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+      // Unbind the VBO
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
       checkGlError("glBindBuffer 0");
    }
 
@@ -97,22 +97,22 @@ bool TexturedQuadEffect::load()
            1.0f,  1.0f, 1.0f, 1.0f,
            1.0f, -1.0f, 1.0f, 0.0f
       };
-           
-	   const GLuint vertexStride = 4 * sizeof(GLfloat); // 2 floats for the pos, 2 for the UVs
-      
-	   // Bind the VBO
-	   glBindBuffer(GL_ARRAY_BUFFER, flipVbo);
+
+      const GLuint vertexStride = 4 * sizeof(GLfloat); // 2 floats for the pos, 2 for the UVs
+
+      // Bind the VBO
+      glBindBuffer(GL_ARRAY_BUFFER, flipVbo);
       checkGlError("glBindBuffer");
 
-	   // Set the buffer's data
-	   glBufferData(GL_ARRAY_BUFFER, 6 * vertexStride, fullscreenVertices, GL_STATIC_DRAW);
+      // Set the buffer's data
+      glBufferData(GL_ARRAY_BUFFER, 6 * vertexStride, fullscreenVertices, GL_STATIC_DRAW);
       checkGlError("glBufferData");
-   
-	   // Unbind the VBO
-	   glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+      // Unbind the VBO
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
       checkGlError("glBindBuffer 0");
    }
-   
+
    LOGI("Successfully loaded textured quad effect.");
    return true;
 }
@@ -120,38 +120,38 @@ bool TexturedQuadEffect::load()
 void TexturedQuadEffect::draw()
 {
    glActiveTexture(GL_TEXTURE0);
-   
+
    // Bind program
    glUseProgram(program);
    checkGlError("glUseProgram textured quad");
    
-	const GLuint vertexStride = 4 * sizeof(GLfloat); // 3 floats for the pos, 2 for the UVs
+   const GLuint vertexStride = 4 * sizeof(GLfloat); // 3 floats for the pos, 2 for the UVs
 
    // Bind the VBO
-	glBindBuffer(GL_ARRAY_BUFFER, _flipY ? flipVbo : vbo);
+   glBindBuffer(GL_ARRAY_BUFFER, _flipY ? flipVbo : vbo);
    checkGlError("glBindBuffer textured quad");
 
-	// Pass the vertex data
-	glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, vertexStride, 0);
+   // Pass the vertex data
+   glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, vertexStride, 0);
    checkGlError("glVertexAttribPointer");
 
-	glEnableVertexAttribArray(positionAttribute);
+   glEnableVertexAttribArray(positionAttribute);
    checkGlError("glEnableVertexAttribArray");
 
-	// Pass the texture coordinates data
-	glVertexAttribPointer(uvAttribute, 2, GL_FLOAT, GL_FALSE, vertexStride, (void*) (2 * sizeof(GLfloat)));
+   // Pass the texture coordinates data
+   glVertexAttribPointer(uvAttribute, 2, GL_FLOAT, GL_FALSE, vertexStride, (void*) (2 * sizeof(GLfloat)));
    checkGlError("glVertexAttribPointer");
 
-	glEnableVertexAttribArray(uvAttribute);
+   glEnableVertexAttribArray(uvAttribute);
    checkGlError("glEnableVertexAttribArray");
 
-	// Draws a non-indexed triangle array
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+   // Draws a non-indexed triangle array
+   glDrawArrays(GL_TRIANGLES, 0, 6);
    checkGlError("glDrawArrays textured quad");
-   
+
    // unwind
    glDisableVertexAttribArray(positionAttribute);
    glDisableVertexAttribArray(uvAttribute);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glUseProgram(0);
+   glBindBuffer(GL_ARRAY_BUFFER, 0);
+   glUseProgram(0);
 }

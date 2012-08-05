@@ -9,6 +9,8 @@
 #include "Simulation.hpp"
 #include "WindowsAssetLoader.hpp"
 
+#define WINDOW_CLASS _T("TriDrawClass")
+
 const int ResolutionX = 540;
 const int ResolutionY = 960;
 
@@ -42,10 +44,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
          break;
    }
 
-	return DefWindowProc(hWnd, message, wParam, lParam);
+   return DefWindowProc(hWnd, message, wParam, lParam);
 }
-
-#define WINDOW_CLASS _T("TriDrawClass")
 
 /**
  * Initialize an EGL context for the current display.
@@ -54,7 +54,7 @@ static bool engine_init_display(HINSTANCE hInstance)
 {
    // initialize OpenGL ES and EGL
    LOGI("Begin engine_init_display");
-	
+
    /*
    * Here specify the attributes of the desired configuration.
    * Below, we select an EGLConfig with at least 8 bits per color
@@ -90,31 +90,31 @@ static bool engine_init_display(HINSTANCE hInstance)
    * As soon as we picked a EGLConfig, we can safely reconfigure the
    * ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
    eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
-   
+
    int x, y;
-	RECT winRect;
+   RECT winRect;
 
-	SetRect(&winRect, 0, 0, ResolutionX, ResolutionY);
-	AdjustWindowRectEx(&winRect, WS_CAPTION|WS_SYSMENU, false, 0);
+   SetRect(&winRect, 0, 0, ResolutionX, ResolutionY);
+   AdjustWindowRectEx(&winRect, WS_CAPTION|WS_SYSMENU, false, 0);
 
-	x = 0 - winRect.left;
-	winRect.left += x;
-	winRect.right += x;
+   x = 0 - winRect.left;
+   winRect.left += x;
+   winRect.right += x;
 
-	y = 0 - winRect.top;
-	winRect.top += y;
-	winRect.bottom += y;
+   y = 0 - winRect.top;
+   winRect.top += y;
+   winRect.bottom += y;
 
-	if(true)
-	{
-		x = CW_USEDEFAULT;
-		y = CW_USEDEFAULT;
-	}
-	else
-	{
-		x = winRect.left;
-		y = winRect.top;
-	}
+   if(true)
+   {
+      x = CW_USEDEFAULT;
+      y = CW_USEDEFAULT;
+   }
+   else
+   {
+      x = winRect.left;
+      y = winRect.top;
+   }
 
    WNDCLASS wc;
    wc.style         = CS_HREDRAW | CS_VREDRAW;
@@ -129,7 +129,7 @@ static bool engine_init_display(HINSTANCE hInstance)
    wc.lpszClassName = WINDOW_CLASS;
    RegisterClass(&wc);
 
-	hWnd = CreateWindow(
+   hWnd = CreateWindow(
       WINDOW_CLASS, _T("tri-draw"),
       WS_VISIBLE|WS_CAPTION|WS_SYSMENU,
       x, y, winRect.right-winRect.left, winRect.bottom-winRect.top,
@@ -198,7 +198,7 @@ static void engine_draw_frame()
    const std::clock_t start = std::clock();   
    simulation->tick();
    
-	// Render to screen
+   // Render to screen
    eglSwapBuffers(display, surface);    
    frameTime = (std::clock() - start) / (float)CLOCKS_PER_SEC;
 }
@@ -241,7 +241,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
    if(!engine_init_display(hInstance))
       return -1;
-    
+
    MSG message;
    message.message = (~WM_QUIT);
 

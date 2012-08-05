@@ -1,0 +1,41 @@
+SsTD - Slow'n silly Tri Draw
+
+Implementation of Roger Alsing's idea of drawing images based on simple shapes (triangles)
+using a simple hill-climping mutation optimization algorithm.
+
+Based on OpenGL ES 2.0, GLM.
+Runs on Android and Windows.
+
+
+License
+--------------------------
+DWYW - "Do whatever you want"
+
+Credits
+--------------------------
+Idea        | Roger Alsing : http://rogeralsing.com/2008/12/07/genetic-programming-evolution-of-mona-lisa/
+Inspiration | @alteredq    : http://alteredqualia.com/visualization/evolve/
+
+Technology  | Windows OpenGL ES 2.0 PC by imagination : http://www.imgtec.com/powervr/insider/sdkdownloads/
+Technology  | OpenGL Mathematics                      : http://glm.g-truc.net/
+
+
+Compilation
+==========================
+
+Compile Android on Windows
+--------------------------
+1. Install and configure ADK, Cygwin and NDK
+2. cd to /projects/android/
+3. call ndk-build
+4. Error "./obj/local/armeabi/libgnustl_static.a: Permission denied" is fixed by giving that file write/change permissions
+5. open project in Eclipse
+6. compile and deploy
+
+
+Compile on Windows
+--------------------------
+1. Open \projects\vs-2010\tri-draw.sln
+2. compile
+3. copy .dlls from \dependencies\win32\lib\[debug|release]\ to output
+4. copy \assets\ folder to output

@@ -7,9 +7,16 @@ Based on OpenGL ES 2.0, GLM.
 Runs on Android and Windows.
 
 
+Warning
+--------------------------
+Quite some of the code in this project is still supbar and quick prototyp material.
+Also the code is far from optimized and contains one or the other hack.
+
+
 License
 --------------------------
 DWYW - "Do whatever you want"
+
 
 Credits
 --------------------------

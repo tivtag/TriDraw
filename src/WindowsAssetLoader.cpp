@@ -28,10 +28,10 @@ std::vector<unsigned char> WindowsAssetLoader::read(const std::string& assetName
 
    std::vector<unsigned char> fileContent;
 
-   if( file.good() )
+   if(file.good())
    {
       // Slow! Should be optimized.
-      unsigned char ch = file.get(); 
+      unsigned char ch = file.get();
       while(file.good())
       {
          fileContent.push_back(ch);

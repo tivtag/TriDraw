@@ -1,6 +1,6 @@
 SsTD - Slow'n silly Tri Draw
 
-Implementation of Roger Alsing's idea of recreating existing images by drawing simple polygons (triangles).
+Implementation of Roger Alsing's idea of recreating existing images by drawing polygons.
 It uses a simple hill-climping mutation optimization algorithm that gradually 
 adds, removes, reorders, recolors and moves triangles.
 
